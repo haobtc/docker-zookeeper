@@ -1,0 +1,26 @@
+# run 'sudo docker login --username=gonbo@aliyun.com registry.cn-hangzhou.aliyuncs.com' first for authentication
+version: '2'
+services:
+  zookeeper:
+    image: zookeeper
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    environment:
+      SERVICE_NAME: pool
+      CONTAINER_NAME: zk-node-0
+      ZOOKEEPER_SERVER_IDS: zk-node-0:1,zk-node-1:2,zk-node-2:3
+      HAOBTC_INSTANCES: zk-node-0,zk-node-1,zk-node-2
+      HAOBTC_ZK_NODE_0_HOST: 10.0.0.1  
+      HAOBTC_ZK_NODE_0_CLIENT_PORT: 2181
+      HAOBTC_ZK_NODE_0_PEER_PORT: 2888
+      HAOBTC_ZK_NODE_0_LEADER_ELECTION_PORT: 3888
+      HAOBTC_ZK_NODE_1_HOST: 10.0.0.2 
+      HAOBTC_ZK_NODE_1_CLIENT_PORT: 2181
+      HAOBTC_ZK_NODE_1_PEER_PORT: 2888
+      HAOBTC_ZK_NODE_1_LEADER_ELECTION_PORT: 3888
+      HAOBTC_ZK_NODE_2_HOST: 10.0.0.3 
+      HAOBTC_ZK_NODE_2_CLIENT_PORT: 2181
+      HAOBTC_ZK_NODE_2_PEER_PORT: 2888
+      HAOBTC_ZK_NODE_2_LEADER_ELECTION_PORT: 3888
