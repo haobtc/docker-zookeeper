@@ -47,10 +47,22 @@ conf = {
 def build_node_repr(name):
     """Build the representation of a node with peer and leader-election
     ports."""
-    return '{}:{}:{}'.format(
-        get_specific_host(get_service_name(), name),
-        get_specific_port(get_service_name(), name, 'peer'),
-        get_specific_port(get_service_name(), name, 'leader_election'))
+    global conf
+    raw_peer_type_env = '%s_%s_peer_type'%(get_service_name(), name)
+    peer_type_env = raw_peer_type_env.replace('-', '_').upper()
+    peer_type = os.environ.get(peer_type_env, None)
+    
+    if peer_type == 'observer':
+        conf['peerType'] = 'observer'
+        return '{}:{}:{}:observer'.format(
+            get_specific_host(get_service_name(), name),
+            get_specific_port(get_service_name(), name, 'peer'),
+            get_specific_port(get_service_name(), name, 'leader_election'))
+    else:
+        return '{}:{}:{}'.format(
+            get_specific_host(get_service_name(), name),
+            get_specific_port(get_service_name(), name, 'peer'),
+            get_specific_port(get_service_name(), name, 'leader_election'))
 
 
 # Add the ZooKeeper node list with peer and leader election ports and figure
@@ -87,6 +99,7 @@ if ZOOKEEPER_CLUSTER_SIZE > 0 and \
                       'cluster ({})!\n')
                      .format(ZOOKEEPER_CLUSTER_SIZE), ZOOKEEPER_NODE_COUNT)
     sys.exit(1)
+
 
 # Write out the ZooKeeper configuration file.
 with open(ZOOKEEPER_CONFIG_FILE, 'w+') as f:
